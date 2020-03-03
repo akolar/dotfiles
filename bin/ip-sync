@@ -1,0 +1,39 @@
+#!/usr/bin/env bash
+
+mount_path="/run/user/`id -u`/iPhone"
+
+echo "Creating mount point..."
+mkdir $mount_path
+
+echo "Mounting iPhone..."
+ifuse $mount_path
+
+echo "Copying files..."
+echo
+last=$(cat ~/Photos/iPhone/.last)
+for d in $mount_path/DCIM/*; do
+    for img in $d/*; do
+        num=$(basename $img | tail -c +5 | head -c +4)
+        if [ "$num" -le "$last" ]; then
+            continue;
+        fi
+        echo "Copying $(basename $img)"
+        cp "$img" "$HOME/Photos/iPhone/.temp"
+        sleep .3
+    done
+done
+
+echo
+echo "Removing mount point..."
+kill "`pgrep ifuse`"
+sleep 1
+rmdir $mount_path
+
+echo "Renaming copied files..."
+for f in ~/Photos/iPhone/.temp/*; do
+    exiftool -r '-FileName<CreateDate' -o "$HOME/Photos/iPhone" -d 'IMG_%Y-%m-%d_%H:%M:%S%%-c.%%le' "$f" >> /dev/null
+    echo $num > ~/Photos/iPhone/.last
+    rm "$f"
+done
+
+echo "Done"

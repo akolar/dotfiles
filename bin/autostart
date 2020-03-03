@@ -1,0 +1,14 @@
+#!/usr/bin/env bash
+
+xrdb ~/.Xresources
+xautolock -locker /usr/local/bin/lock -time 10 &
+setxkbmap -layout 'us(intl)'
+xmodmap ~/.Xmodmap
+
+i3-msg "workspace 6; append_layout ~/.config/i3/workspace-6.json"
+termite -e ranger --class ranger &
+termite -e htop --class htop &
+termite -e rtorrent --class rtorrent &
+termite -e ncmpcpp --class ncmpcpp &
+
+i3-battery-nagbar --threshold=5 --interval=15s &

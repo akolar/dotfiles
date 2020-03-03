@@ -1,0 +1,1 @@
+export PATH=/usr/local/bin:/usr/bin:/bin:/usr/local/sbin:/usr/sbin:/sbin:/usr/bin/core_perl:/home/anze/.gem/ruby/2.0.0/bin:/opt/java/lib:/opt/java:/opt/java/jre:/opt/java/bin:$DOTFILES/scripts:$DOTFILES/bin:$HOME/.gem/ruby/2.1.0/bin:$HOME/.gem/ruby/2.0.0/bin:$DOTFILES/bin:/usr/bin/vendor_perl

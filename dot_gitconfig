@@ -1,0 +1,63 @@
+# Sample gitconfig
+#
+
+[hub]
+	protocol = https
+[user]
+	name = Anze Kolar
+	email = me@akolar.com
+[credential]
+	helper = cache
+[alias]
+	prune = fetch --prune
+	undo = reset --soft HEAD
+	stash-all = stash save --include-untracked
+	glog = log --graph --pretty=format:'%Cred%h%Creset -%C(yellow)%d%Creset %s %Cgreen(%cr) %C(bold blue)<%an>%Creset'
+[color]
+	diff = auto
+	status = auto
+	branch = auto
+	ui = true
+[core]
+	excludesfile = ~/.gitignore
+	editor = nvim
+	autocrlf = input
+	pager = diff-so-fancy | less --tabs=4 -RFX
+[apply]
+	whitespace = nowarn
+[mergetool]
+	keepBackup = false
+[difftool]
+	prompt = false
+[help]
+	autocorrect = 1
+[push]
+	# See `git help config` (search for push.default)
+	# for more information on different options of the below setting.
+	#
+	# Setting to git 2.0 default to surpress warning message
+	default = simple
+	followTags = true
+
+[status]
+	showUntrackedFiles = all
+
+[transfer]
+	fsckobjects = false
+
+[pager]
+	difftool = true
+[http]
+	cookiefile = /home/anze/.gitcookies
+[color "diff-highlight"]
+	oldNormal = red bold
+	oldHighlight = red bold 52
+	newNormal = green bold
+	newHighlight = green bold 22
+[color "diff"]
+	meta = 11
+	frag = magenta bold
+	commit = yellow bold
+	old = red bold
+	new = green bold
+	whitespace = red reverse

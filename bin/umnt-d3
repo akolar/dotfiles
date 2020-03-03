@@ -1,0 +1,6 @@
+#!/usr/bin/env bash
+
+sync
+sudo umount /mnt/Backup
+sudo cryptsetup close d3-backup
+

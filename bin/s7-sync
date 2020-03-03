@@ -1,0 +1,54 @@
+#!/usr/bin/env bash
+
+SD_CARD='15CE-E6F7'
+
+function copy_photos {
+    # Arguments: $1=path
+
+    echo "Transfering photos: $1"
+
+    mkdir ~/Photos/.new
+    photos=$(adb shell ls $1)
+    for p in $photos; do
+        grep $p ~/Photos/.transfered >> /dev/null && continue
+        adb pull $1/$p ~/Photos/.new >> /dev/null
+        echo $p >> ~/Photos/.transfered
+    done
+
+    echo "  :: Renaming copied files..."
+
+    if [[ $(ls ~/Photos/.new | wc -l) -gt 0 ]]; then
+        for f in ~/Photos/.new/*; do
+            exiftool -r '-FileName<CreateDate' -o "$HOME/Photos" -d 'IMG_%Y-%m-%d_%H:%M:%S%%-c.%%le' "$f" >> /dev/null
+            rm "$f"
+        done
+    fi
+
+    rmdir ~/Photos/.new
+    echo '  :: Done'
+}
+
+function copy_music {
+    echo 'Syncing music'
+    # echo '  :: Setting tags'
+    # ~/Music/0_Phone/tag.sh
+    echo '  :: Syncing content'
+
+    ifs=$IFS
+    IFS=$'\n'
+    for f in $(/usr/bin/diff -w <(ls ~/Music/0_Phone | sort) <(adb shell ls /storage/$SD_CARD/Music/ | sort) | grep '<'); do
+        echo "  :: Copying ${f/< /}"
+        adb push "$HOME/Music/0_Phone/${f/< /}" /storage/$SD_CARD/Music/ >> /dev/null
+    done
+
+    IFS=$ifs
+
+    echo '  :: Done'
+}
+
+
+copy_photos '/storage/self/primary/DCIM/Camera'
+copy_photos '/storage/self/primary/DCIM/Screenshots'
+copy_photos "/storage/$SD_CARD/DCIM/Camera"
+
+copy_music

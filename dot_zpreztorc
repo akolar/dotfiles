@@ -1,0 +1,43 @@
+# {{{ General
+
+# Color output (auto set to 'no' on dumb terminals).
+zstyle ':prezto:*:*' color 'yes'
+zstyle ':completion:*' menu select
+zstyle ':completion:*:*:nvim:*:*files' ignored-patterns '*?.class' '*?.pyc' \
+  '*?.pdf' '*?.class' '*?.o' '*?.egg-info' '__pycache__'
+
+zstyle ':prezto:load' pmodule \
+  'environment' \
+  'editor' \
+  'history' \
+  'spectrum' \
+  'utility' \
+  'completion' \
+  'prompt' \
+  'archive' \
+  'git' \
+  'history-substring-search' \
+  'pacman' \
+# }}}
+# {{{ Editor
+# Set the key mapping style to 'emacs' or 'vi'.
+zstyle ':prezto:module:editor' key-bindings 'vi'
+# }}}
+# {{{ History
+export HIST_IGNORE_SPACE=1
+# }}}
+# {{{ Pacman
+
+# Set the Pacman frontend.
+zstyle ':prezto:module:pacman' frontend 'pacaur'
+# }}}
+# {{{ Prompt
+
+# Set the prompt theme to load.
+# Setting it to 'random' loads a random theme.
+# Auto set to 'off' on dumb terminals.
+zstyle ':prezto:module:prompt' theme 'pure'
+# }}}
+# {{{ Other
+unsetopt CORRECT
+# }}}

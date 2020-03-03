@@ -1,0 +1,28 @@
+import fitparse
+import os
+import sys
+
+try:
+    path = sys.argv[1]
+except:
+    print('Usage: {} <path>'.format(sys.argv[0]))
+    exit(1)
+
+if not os.path.exists(path):
+    print('Path \'{}\' does not exist'.format(path))
+    exit(1)
+
+for f in os.listdir(path):
+    if f.startswith('ACT_') or not f.lower().endswith('.fit'):
+        continue
+
+    full_path = os.path.join(path, f)
+
+    activity = fitparse.FitFile(full_path)
+
+    records = activity.get_messages('record')
+    first = list(records)[0]
+    start = first.get_values()['timestamp']
+
+    os.rename(full_path,
+              os.path.join(path, start.strftime('ACT_%Y-%m-%d_%H:%M:%S.fit')))

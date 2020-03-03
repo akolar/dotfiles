@@ -1,0 +1,9 @@
+#!/usr/bin/env bash
+
+device="FR310xt"
+
+while lsusb | grep ANT > /dev/null; do
+    antfs-cli -a && break
+done
+
+fitrename "$HOME/Sports/$device"

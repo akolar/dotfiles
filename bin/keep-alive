@@ -1,0 +1,6 @@
+while ; do
+  xscreensaver-command -deactivate > /dev/null
+  sleep 60
+done
+
+

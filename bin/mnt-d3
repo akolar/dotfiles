@@ -1,0 +1,20 @@
+#!/usr/bin/env bash
+
+DISK_UUID="bc2934e8-1215-4188-a9fe-d007cffbb8d6"
+SLEEP_TIME=2
+
+function mount() {
+  retry_num=$1
+
+  if [ -e "/dev/disk/by-uuid/$DISK_UUID" ]; then
+      gpg -d ~/.password-store/Disks/d3-key.gpg 2> /dev/null | sudo cryptsetup -v --key-file=- luksOpen /dev/disk/by-uuid/$DISK_UUID d3-backup
+  elif [ $1 -lt 10 ]; then
+    echo "Disk not found. Retrying in ${SLEEP_TIME}s."
+    sleep "$SLEEP_TIME"
+    mount "$((retry_num + 1))"
+  else
+    echo 'Disk not found. Exiting'
+  fi
+}
+
+mount 0

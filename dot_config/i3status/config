@@ -1,0 +1,86 @@
+# i3status configuration file.
+# see "man i3status" for documentation.
+
+# It is important that this file is edited as UTF-8.
+# The following line should contain a sharp s:
+# ß
+# If the above line is not correctly displayed, fix your editor first!
+
+general {
+        output_format = "i3bar"
+        colors = true
+        interval = 1
+}
+
+order += "volume_status"
+order += "wifi"
+order += "net_rate"
+order += "sysdata"
+order += "frame disk"
+order += "frame bat"
+order += "tztime local"
+
+volume_status {
+        format = "[\?if=is_input 😮|♪] {percentage}%"
+        cache_timeout = 1
+        separator_block_width = 20
+}
+
+wifi {
+        format = "{ssid}({signal_percent}%) - {ip}"
+        separator_block_width = 20
+}
+
+net_rate {
+        cache_timeout = 2
+        unit = "kB/s"
+        format_value = "[\?min_length=5 {value:.1f}{unit}]"
+        format = "{down} / {up}"
+        separator_block_width = 20
+}
+
+sysdata {
+        cache_timeout = 2
+        format = "[\?color=cpu_used_percent {cpu_used_percent}%] :: {cpu_temp}{temp_unit} :: [\?color=mem_used_percent {mem_used} {mem_total_unit}]"
+        separator_block_width = 20
+}
+
+frame disk {
+        format = "{output}"
+        format_separator = ' :: '
+        separator_block_width = 20
+
+        disk "/" {
+                format = "%avail"
+        }
+        disk "/home" {
+                format = "%avail"
+        }
+}
+
+frame bat {
+        format = "{output}"
+        format_separator = ' '
+        separator_block_width = 20
+
+        battery_level {
+                battery_id = 0
+                blocks = " "
+                format = "e: {icon}{percent}"
+                charging_character = "+"
+                threshold_degraded=3
+        }
+
+        battery_level {
+                battery_id = 1
+                blocks = " "
+                format = "i: {icon}{percent}"
+                charging_character = "+"
+                threshold_degraded=15
+        }
+}
+
+tztime local {
+        separator_block_width = 20
+        format = "%a %Y-%m-%d %H:%M:%S "
+}

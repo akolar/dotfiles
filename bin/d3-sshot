@@ -1,0 +1,79 @@
+#!/usr/bin/env bash
+
+set -o errexit
+set -o nounset
+set -o pipefail
+
+bash_major_ver="${BASH_VERSION:0:1}"
+if [ "$bash_major_ver" -lt 4 ]; then
+    echo "bash version should be 4.0 or higher, is $bash_major_ver" > /dev/stderr
+    exit 1
+fi
+
+path="Snapshots/`hostname`-`date +%y-%m-%d`"
+external="/mnt/Backup/$path"
+s3_bucket="s3://akolar-backup"
+remote_snapshot="$s3_bucket/$path.tar.gpg"
+
+function upload_incremental {
+    local_path=$1
+
+    echo "Uploading photos to s3"
+    s3_path="$s3_bucket/$(basename $local_path)/$(date +%y-%m-%d-%H-%M-%S-%N.tar.gpg)"
+
+    temp=$(mktemp -p "$HOME/.cache")
+
+    touch "$local_path/.s3done"
+    declare -A uploaded
+    for l in $(cat "$local_path/.s3done"); do
+        uploaded["$l"]=1
+    done
+
+    new=()
+    for f in $local_path/*; do
+        if [[ -v uploaded["$f"] ]]; then
+            continue
+        fi
+
+        new+=("$f")
+    done
+
+    echo "-> Have ${#new[@]} new files"
+
+    echo "-> Creating archive, signing and encrypting > $temp"
+    tar cv "${new[@]}" | gpg -es >> "$temp"
+    echo "-> Uploading $temp > $s3_path"
+    s3cmd put "$temp" "$s3_path"
+
+    for img in "${new[@]}"; do
+        echo "$img" >> "$local_path/.s3done"
+    done
+
+    rm "$temp"
+}
+
+mkdir -p $external
+
+echo "Creating snapshot..."
+tar cP -h $HOME/{Work,Faks,Sports,Notes,.local/share/chezmoi,.password-store} | pv | pigz -c --best -p 4 > $external/snapshot.tar.gz
+
+echo "Syncing incremental data..."
+rsync -qaP $HOME/{Photos,Binder} /mnt/Backup
+
+echo "Backing up list of installed packages..."
+pacman -Qqen > $external/pkglist.txt
+pacman -Qqem > $external/pacaur.txt
+
+echo "Uploading snapshot to s3"
+temp=$(mktemp -p "$HOME/.cache")
+echo "-> Creating a tar archive of $external > $temp"
+tar c $external | gpg --compress-algo none -es > "$temp"
+echo "-> Uploading to s3: $temp > $remote_snapshot"
+s3cmd put "$temp" "$remote_snapshot"
+rm "$temp"
+
+upload_incremental "$HOME/Photos"
+upload_incremental "$HOME/Misc"
+upload_incremental "$HOME/Binder"
+
+echo "Done"

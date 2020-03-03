@@ -1,0 +1,3 @@
+#!/usr/bin/env sh
+killall wicd-client
+wicd-gtk
