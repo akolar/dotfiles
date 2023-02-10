@@ -15,3 +15,8 @@ fi
 for file in $ZSH/*.zsh; do
   source $file
 done
+
+eval "$(bw completion --shell zsh); compdef _bw bw;"
+
+export BW_CLIENTID='user.bba49d96-7059-4df5-865a-acef0145f8ca '
+export BW_CLIENTSECRET='PiTZXUMRsga9SsyTFYdwB1RghWcbcS'

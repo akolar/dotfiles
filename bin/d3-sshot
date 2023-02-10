@@ -14,11 +14,14 @@ path="Snapshots/`hostname`-`date +%y-%m-%d`"
 external="/mnt/Backup/$path"
 s3_bucket="s3://akolar-backup"
 remote_snapshot="$s3_bucket/$path.tar.gpg"
+snapshot_dirs=($HOME/{Work,Faks,Sports,Notes,.local/share/chezmoi,Money})
 
 function upload_incremental {
     local_path=$1
+    ifs=$IFS
+    IFS=$'\n'
 
-    echo "Uploading photos to s3"
+    echo "Uploading $local_path to s3"
     s3_path="$s3_bucket/$(basename $local_path)/$(date +%y-%m-%d-%H-%M-%S-%N.tar.gpg)"
 
     temp=$(mktemp -p "$HOME/.cache")
@@ -37,6 +40,11 @@ function upload_incremental {
 
         new+=("$f")
     done
+    
+    if [ "${#new[@]}" -eq 0 ]; then
+        echo "-> No new files, skipping upload"
+        return
+    fi
 
     echo "-> Have ${#new[@]} new files"
 
@@ -50,12 +58,15 @@ function upload_incremental {
     done
 
     rm "$temp"
+    IFS=$ifs
 }
 
 mkdir -p $external
 
 echo "Creating snapshot..."
-tar cP -h $HOME/{Work,Faks,Sports,Notes,.local/share/chezmoi,.password-store} | pv | pigz -c --best -p 4 > $external/snapshot.tar.gz
+tar cP -h "${snapshot_dirs[@]}" | 
+    pv -s "$(du -csb "${snapshot_dirs[@]}" | grep total | cut -f1)" |
+    pigz -c --best > $external/snapshot.tar.gz
 
 echo "Syncing incremental data..."
 rsync -qaP $HOME/{Photos,Binder} /mnt/Backup

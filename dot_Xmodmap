@@ -1,7 +1,7 @@
 clear Lock
 
 keycode   8 =
-keycode   9 = Multi_key Multi_key Multi_key Multi_key Multi_key Multi_key
+keycode   9 = Escape NoSymbol Escape NoSymbol Escape
 keycode  10 = 1 exclam 1 exclam 1 exclam
 keycode  11 = 2 at 2 at 2 at
 keycode  12 = 3 numbersign 3 numbersign 3 numbersign
@@ -110,7 +110,7 @@ keycode 114 = Right NoSymbol Right NoSymbol Right
 keycode 115 = End NoSymbol End NoSymbol End
 keycode 116 = Down NoSymbol Down NoSymbol Down
 keycode 117 = Next NoSymbol Next NoSymbol Next
-keycode 118 = Insert NoSymbol Insert NoSymbol Insert
+keycode 118 = Multi_key NoSymbol Multi_key NoSymbol Multi_key NoSymbol
 keycode 119 = Delete NoSymbol Delete NoSymbol Delete
 keycode 120 =
 keycode 121 = XF86AudioMute NoSymbol XF86AudioMute NoSymbol XF86AudioMute

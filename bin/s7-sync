@@ -49,6 +49,5 @@ function copy_music {
 
 copy_photos '/storage/self/primary/DCIM/Camera'
 copy_photos '/storage/self/primary/DCIM/Screenshots'
-copy_photos "/storage/$SD_CARD/DCIM/Camera"
 
-copy_music
+# copy_music

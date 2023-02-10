@@ -25,3 +25,6 @@ alias rm='nocorrect rm'
 # {{{ ZSH
 alias -g S='>& /dev/null &!'
 # }}}
+# {{{ bitwarden
+alias bwu="export BW_SESSION=\$(bw unlock | grep -E '^\\\$ export BW_SESSION=' | sed -En 's/^\\\$ export BW_SESSION=\"(.*?)\"\$/\1/p')"
+# }}}
